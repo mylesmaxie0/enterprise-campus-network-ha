@@ -161,7 +161,8 @@ To validate the resiliency of the network, failures were simulated at the Access
 
 **Screenshot**
 
-`images/access-failover.png`
+<img width="1970" height="641" alt="Screenshot 2026-08-03 at 4 17 46 PM" src="https://github.com/user-attachments/assets/78aa88f1-4272-4954-a062-517e38a95b01" />
+
 
 ---
 
