@@ -1,1 +1,253 @@
-# enterprise-campus-network-ha
+# Enterprise Campus Network with High Availability & Dual ISP Connectivity
+
+A Cisco Packet Tracer project demonstrating a highly available enterprise campus network designed using a three-tier architecture with redundant core, edge, and WAN connectivity. The project implements enterprise networking technologies including HSRP, Rapid PVST+, EtherChannel, eBGP, NAT/PAT, inter-VLAN routing, and DHCP relay while validating network resiliency through failover testing.
+
+![Network Topology](images/topology.png)
+
+---
+
+# Overview
+
+This project simulates a highly available enterprise campus network following a hierarchical architecture consisting of Access, Core, and Edge layers. The design emphasizes scalability, resiliency, and fault tolerance by incorporating redundant network paths, gateway redundancy, and dual Internet connectivity.
+
+The network provides segmented Data, Voice, Wireless, and Transit VLANs while demonstrating enterprise routing, switching, and WAN technologies commonly deployed in production environments.
+
+---
+
+# Objectives
+
+- Design a scalable three-tier enterprise campus network.
+- Implement gateway redundancy using HSRP.
+- Configure redundant Layer 2 paths using EtherChannel and Rapid PVST+.
+- Provide redundant WAN connectivity using dual ISPs and eBGP.
+- Implement inter-VLAN routing using multilayer switches.
+- Configure DHCP relay and PAT (NAT Overload).
+- Validate network resiliency through failover testing.
+
+---
+
+# Network Architecture
+
+## Core Layer
+
+- Dual multilayer core switches
+- Inter-VLAN routing using SVIs
+- HSRP gateway redundancy
+- Rapid PVST+ primary and secondary root bridge configuration
+- LACP EtherChannel between core switches
+
+## Access Layer
+
+- Three Layer 2 access switches
+- Redundant EtherChannel uplinks to both core switches
+- Data, Voice, and Wireless VLAN segmentation
+- End-user, IP phone, and wireless access connectivity
+
+## Edge Layer
+
+- Dual enterprise edge routers
+- HSRP edge gateway redundancy
+- PAT (NAT Overload)
+- Static routing toward internal VLANs
+- eBGP peering with upstream ISPs
+
+## WAN
+
+- Two simulated Internet Service Providers
+- Separate Autonomous Systems (AS100 and AS200)
+- Enterprise Autonomous System (AS300)
+- Simulated public loopback networks for Internet reachability testing
+
+---
+
+# Technologies
+
+| Category | Technologies |
+|-----------|--------------|
+| Routing | Inter-VLAN Routing, Static Routing, eBGP |
+| High Availability | HSRP, Rapid PVST+, EtherChannel (LACP) |
+| Switching | VLANs, 802.1Q Trunking |
+| WAN | Dual ISP Connectivity |
+| Network Services | DHCP Relay, NAT/PAT |
+| Platform | Cisco Packet Tracer |
+
+---
+
+# Network Implementation
+
+## VLAN Design
+
+| VLAN | Purpose | Default Gateway |
+|------|---------|----------------|
+| 10 | Data | 192.168.10.254 |
+| 20 | Voice | 192.168.20.254 |
+| 30 | Wireless | 192.168.30.254 |
+| 99 | Core / Edge Transit | 10.99.99.254 |
+
+---
+
+## High Availability Design
+
+Redundancy was implemented throughout the network using multiple enterprise technologies.
+
+- HSRP configured on both the Core and Edge layers
+- Active/Standby gateway redundancy
+- Rapid PVST+ root bridge optimization
+- LACP EtherChannel providing redundant uplinks
+- Dual enterprise edge routers
+- Dual ISP connectivity
+
+---
+
+## Routing & Internet Connectivity
+
+- Inter-VLAN routing performed by multilayer core switches
+- DHCP requests forwarded using `ip helper-address`
+- Static default routes configured toward the edge layer
+- eBGP configured between enterprise edge routers and simulated ISPs
+- PAT (NAT Overload) configured on both edge routers for Internet access
+
+---
+
+# Verification
+
+Network functionality was verified using Cisco IOS commands including:
+
+```text
+show standby brief
+show spanning-tree
+show spanning-tree root
+show etherchannel summary
+show interfaces trunk
+show vlan brief
+show ip route
+show ip bgp summary
+show ip nat translations
+ping
+traceroute
+```
+
+Verification confirmed:
+
+- Successful HSRP operation
+- Inter-VLAN communication
+- EtherChannel operation
+- Internet connectivity through both ISPs
+- eBGP neighbor establishment
+- Successful NAT translations
+
+---
+
+# Redundancy Validation
+
+To validate the resiliency of the network, failures were simulated at the Access, Core, and Edge layers while monitoring connectivity and failover behavior.
+
+## Access Layer Redundancy
+
+### Test Performed
+
+- Disabled a physical uplink participating in an LACP EtherChannel between an access switch and the core.
+
+### Expected Result
+
+- EtherChannel remains operational using the remaining active member link.
+- End-user connectivity is maintained.
+
+### Result
+
+- Traffic continued forwarding through the remaining EtherChannel member.
+- Clients maintained connectivity to the default gateway and Internet resources.
+
+**Screenshot**
+
+`images/access-failover.png`
+
+---
+
+## Core Layer Redundancy
+
+### Test Performed
+
+- Simulated failure of the primary core switch.
+
+### Expected Result
+
+- HSRP transfers gateway ownership to the standby core switch.
+- Rapid PVST+ recalculates the spanning-tree topology.
+- Inter-VLAN routing continues through the secondary core.
+
+### Result
+
+- HSRP successfully transitioned to the standby core switch.
+- Layer 2 convergence completed successfully.
+- Inter-VLAN routing and Internet connectivity remained operational.
+
+**Screenshot**
+
+`images/core-failover.png`
+
+---
+
+## Edge Layer Redundancy
+
+### Test Performed
+
+- Simulated failure of the primary edge router (EDGE1).
+
+### Expected Result
+
+- HSRP transfers the edge virtual gateway to EDGE2.
+- Internet traffic exits through the secondary ISP.
+
+### Result
+
+- Gateway failover completed successfully.
+- Internal hosts maintained Internet connectivity through EDGE2 and ISP2.
+- PAT continued translating outbound traffic using the backup edge router.
+
+**Screenshot**
+
+`images/edge-failover.png`
+
+---
+
+## Validation Summary
+
+| Component | Failure Simulated | Result |
+|-----------|-------------------|--------|
+| Access Layer | EtherChannel member failure | Successful failover with uninterrupted connectivity |
+| Core Layer | Primary core switch failure | HSRP failover maintained gateway availability |
+| Edge Layer | Primary edge router failure | Internet connectivity maintained through secondary edge router |
+
+---
+
+# Simulation Limitations
+
+Cisco Packet Tracer does not support all enterprise networking features. This topology reflects production design practices while acknowledging simulator limitations.
+
+- Two Wireless LAN Controllers are included to represent a high-availability wireless architecture; however, WLC High Availability (HA SSO) is not supported in Packet Tracer.
+- Internal BGP (iBGP) between enterprise edge routers was not implemented because Packet Tracer does not support iBGP. External BGP (eBGP) was implemented to demonstrate redundant WAN connectivity.
+
+---
+
+# Key Skills Demonstrated
+
+- Enterprise Network Design
+- Routing & Switching
+- High Availability
+- VLAN Segmentation
+- Inter-VLAN Routing
+- HSRP
+- Rapid PVST+
+- LACP EtherChannel
+- eBGP
+- NAT/PAT
+- DHCP Relay
+- Cisco IOS CLI
+- Network Verification & Troubleshooting
+
+---
+
+# Conclusion
+
+This project demonstrates the design, implementation, and validation of a highly available enterprise campus network using Cisco Packet Tracer. By integrating redundant core and edge infrastructure, dual ISP connectivity, gateway redundancy, Layer 2 resiliency, inter-VLAN routing, and Internet access, the lab provides practical experience with enterprise networking concepts while reinforcing network design, configuration, troubleshooting, and failover validation.
