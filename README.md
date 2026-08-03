@@ -2,7 +2,8 @@
 
 A Cisco Packet Tracer project demonstrating a highly available enterprise campus network designed using a three-tier architecture with redundant core, edge, and WAN connectivity. The project implements enterprise networking technologies including HSRP, Rapid PVST+, EtherChannel, eBGP, NAT/PAT, inter-VLAN routing, and DHCP relay while validating network resiliency through failover testing.
 
-![Network Topology](images/topology.png)
+<img width="1737" height="719" alt="Screenshot 2026-08-03 at 8 02 31 AM" src="https://github.com/user-attachments/assets/9336bd1d-9d09-4c65-9e2a-34d19d83616c" />
+
 
 ---
 
