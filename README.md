@@ -309,7 +309,56 @@ Reply from 9.9.9.9: bytes=32 time<1ms TTL=253
 
 **Screenshot**
 
-`images/edge-failover.png`
+#### Edge 1 Shutdown
+<img width="1763" height="692" alt="Screenshot 2026-08-03 at 4 36 00 PM" src="https://github.com/user-attachments/assets/fb3c6dff-295d-4b95-ae11-20f37ec9e59a" />
+
+#### Edge 2 becomes Active
+```
+EDGE2#show standby brief 
+                     P indicates configured to preempt.
+                     |
+Interface   Grp  Pri P State    Active          Standby         Virtual IP
+Gig0/0/1    1    90  P Active   local           unknown         10.99.99.254
+```
+
+#### PC Pinging Edge 2 VIP and ISP2
+```
+C:\>ping 10.99.99.254
+
+Pinging 10.99.99.254 with 32 bytes of data:
+
+Reply from 10.99.99.254: bytes=32 time<1ms TTL=254
+Reply from 10.99.99.254: bytes=32 time<1ms TTL=254
+Reply from 10.99.99.254: bytes=32 time<1ms TTL=254
+Reply from 10.99.99.254: bytes=32 time<1ms TTL=254
+
+Ping statistics for 10.99.99.254:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+
+C:\>ping isp2
+
+Pinging 9.9.9.9 with 32 bytes of data:
+
+Reply from 9.9.9.9: bytes=32 time<1ms TTL=253
+Reply from 9.9.9.9: bytes=32 time<1ms TTL=253
+Reply from 9.9.9.9: bytes=32 time<1ms TTL=253
+Reply from 9.9.9.9: bytes=32 time<1ms TTL=253
+
+Ping statistics for 9.9.9.9:
+    Packets: Sent = 4, Received = 4, Lost = 0 (0% loss),
+Approximate round trip times in milli-seconds:
+    Minimum = 0ms, Maximum = 0ms, Average = 0ms
+```
+
+#### Edge 2 performing NAT to ISP 2
+```
+EDGE2#show ip nat translations 
+Pro  Inside global     Inside local       Outside local      Outside global
+icmp 200.200.200.2:44  192.168.10.106:44  9.9.9.9:44         9.9.9.9:44
+icmp 200.200.200.2:45  192.168.10.106:45  9.9.9.9:45         9.9.9.9:45
+```
 
 ---
 
