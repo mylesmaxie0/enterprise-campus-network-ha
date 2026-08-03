@@ -186,8 +186,108 @@ To validate the resiliency of the network, failures were simulated at the Access
 
 **Screenshot**
 
-`images/core-failover.png`
+#### CORE 1 Shutdown
+<img width="1619" height="664" alt="Screenshot 2026-08-03 at 4 28 41 PM" src="https://github.com/user-attachments/assets/91db926a-2808-43ce-9576-11d97aaa6f9e" />
 
+
+#### CORE 2 Switch Become Active for all VLANs
+```
+CORE2#show standby brief 
+                     P indicates configured to preempt.
+                     |
+Interface   Grp  Pri P State    Active          Standby         Virtual IP
+Vl10        10   90  P Active   local           unknown         192.168.10.254 
+Vl20        20   90  P Active   local           unknown         192.168.20.254 
+Vl30        30   90  P Active   local           unknown         192.168.30.254
+```
+
+#### CORE 2 Switch Becomes Root Primary For all VLANs
+```
+CORE2#show spanning-tree 
+VLAN0010
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    28682
+             Address     0010.113B.2831
+             This bridge is the root
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    28682  (priority 28672 sys-id-ext 10)
+             Address     0010.113B.2831
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  20
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Po15             Desg FWD 12        128.31   P2p
+Po14             Desg FWD 12        128.30   P2p
+Po16             Desg FWD 12        128.32   P2p
+
+VLAN0020
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    28692
+             Address     0010.113B.2831
+             This bridge is the root
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    28692  (priority 28672 sys-id-ext 20)
+             Address     0010.113B.2831
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  20
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Po15             Desg FWD 12        128.31   P2p
+Po14             Desg FWD 12        128.30   P2p
+Po16             Desg FWD 12        128.32   P2p
+
+VLAN0030
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    28702
+             Address     0010.113B.2831
+             This bridge is the root
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    28702  (priority 28672 sys-id-ext 30)
+             Address     0010.113B.2831
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  20
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Po15             Desg FWD 12        128.31   P2p
+Po14             Desg FWD 12        128.30   P2p
+Po16             Desg FWD 12        128.32   P2p
+
+VLAN0099
+  Spanning tree enabled protocol rstp
+  Root ID    Priority    32867
+             Address     0010.113B.2831
+             This bridge is the root
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+
+  Bridge ID  Priority    32867  (priority 32768 sys-id-ext 99)
+             Address     0010.113B.2831
+             Hello Time  2 sec  Max Age 20 sec  Forward Delay 15 sec
+             Aging Time  20
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Gi1/0/1          Desg FWD 4         128.1    P2p
+```
+#### PC Ping to ISP2
+```
+C:\>ping -t isp2
+
+Pinging 9.9.9.9 with 32 bytes of data:
+
+Request timed out.
+Reply from 9.9.9.9: bytes=32 time=1ms TTL=253
+Reply from 9.9.9.9: bytes=32 time=1ms TTL=253
+Reply from 9.9.9.9: bytes=32 time<1ms TTL=253
+Reply from 9.9.9.9: bytes=32 time<1ms TTL=253
+Reply from 9.9.9.9: bytes=32 time<1ms TTL=253
+
+```
 ---
 
 ## Edge Layer Redundancy
